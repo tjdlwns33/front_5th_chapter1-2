@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
@@ -9,32 +9,39 @@ export function createElement(vNode) {
   }
   if (Array.isArray(vNode)) {
     const fragment = document.createDocumentFragment(); // DocumentFragment 생성
-    vNode.forEach((childNode) => {
-      const childElement = createElement(childNode);
-      if (childElement instanceof Node) {
-        fragment.appendChild(childElement); // 각 항목을 Fragment에 추가
-      }
+    vNode.forEach((child) => {
+      const childElement = createElement(child);
+      fragment.appendChild(childElement); // 각 항목을 Fragment에 추가
     });
     return fragment;
   }
 
   const element = document.createElement(vNode.type);
-  if (vNode.props) {
-    for (const key in vNode.props) {
-      if (Object.prototype.hasOwnProperty.call(vNode.props, key)) {
-        element.setAttribute(key, vNode.props[key]);
-      }
-    }
-  }
   if (vNode.children) {
-    vNode.children.forEach((childNode) => {
-      const childElement = createElement(childNode);
-      if (childElement instanceof Node) {
-        element.appendChild(childElement);
-      }
+    vNode.children.forEach((child) => {
+      const childElement = createElement(child);
+      element.appendChild(childElement);
     });
   }
+
+  updateAttributes(element, vNode.props);
+
   return element;
 }
 
-// function updateAttributes($el, props) {}
+function updateAttributes($el, props) {
+  if (props) {
+    for (const key in props) {
+      if (Object.prototype.hasOwnProperty.call(props, key)) {
+        if (key.startsWith("on")) {
+          const eventType = key.slice(2).toLowerCase();
+          addEvent($el, eventType, props[key]);
+        } else if (key === "className") {
+          $el.setAttribute("class", props[key]);
+        } else {
+          $el.setAttribute(key, props[key]);
+        }
+      }
+    }
+  }
+}
