@@ -23,9 +23,7 @@ export function createElement(vNode) {
       element.appendChild(childElement);
     });
   }
-
   updateAttributes(element, vNode.props);
-
   return element;
 }
 
