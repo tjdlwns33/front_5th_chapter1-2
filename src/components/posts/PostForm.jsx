@@ -3,7 +3,7 @@ import { createVNode } from "../../lib";
 import { globalStore } from "../../stores";
 
 export const PostForm = () => {
-  const { currentUser, posts, loggedIn } = globalStore.getState();
+  const { currentUser, posts } = globalStore.getState();
 
   function postSubmit() {
     // newPost 세팅

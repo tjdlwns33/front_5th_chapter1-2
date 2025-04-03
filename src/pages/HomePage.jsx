@@ -20,12 +20,13 @@ export const HomePage = () => {
         <Navigation />
 
         <main className="p-4">
-          {loggedIn ? <PostForm /> : null}
+          {loggedIn && <PostForm />}
           <div id="posts-container" className="space-y-4">
             {[...posts]
               .sort((a, b) => b.time - a.time)
-              .map((props) => {
-                return <Post {...props} activationLike={props.isLiked} />;
+              .map((props, index) => {
+                // console.log(index);
+                return <Post {...props} />;
               })}
           </div>
         </main>
