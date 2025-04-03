@@ -6,6 +6,9 @@ import { globalStore } from "../../stores";
 export const Post = ({ author, time, content, likeUsers }) => {
   const { posts, currentUser } = globalStore.getState();
 
+  if (!currentUser) {
+    return;
+  }
   const isLiked = likeUsers.includes(currentUser.username);
 
   const likeClick = () => {
