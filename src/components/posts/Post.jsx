@@ -3,20 +3,40 @@ import { createVNode } from "../../lib";
 import { toTimeFormat } from "../../utils/index.js";
 import { globalStore } from "../../stores";
 
-export const Post = ({
-  author,
-  time,
-  content,
-  likeUsers,
-  activationLike = false,
-}) => {
-  const { loggedIn } = globalStore.getState();
+export const Post = ({ author, time, content, likeUsers, activationLike }) => {
+  const { loggedIn, posts, currentUser } = globalStore.getState();
 
   const likeClick = (e) => {
     e.preventDefault();
     if (!loggedIn) {
       return alert("로그인 후 이용해주세요");
     }
+
+    const updatedPosts = posts.map((post) => {
+      if (post.author === author) {
+        const isLiked = post.likeUsers.includes(currentUser.username);
+        if (isLiked) {
+          activationLike = isLiked;
+        } else {
+          activationLike = !isLiked;
+        }
+        const updateLikedUsers = isLiked
+          ? post.likeUsers.filter(
+              (username) => username !== currentUser.username,
+            )
+          : [...post.likeUsers, currentUser.username];
+        return {
+          ...post,
+          likeUsers: updateLikedUsers,
+          isLiked: !isLiked,
+        };
+      }
+      return post;
+    });
+
+    globalStore.setState({
+      posts: updatedPosts,
+    });
   };
 
   return (
