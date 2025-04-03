@@ -3,22 +3,18 @@ import { createVNode } from "../../lib";
 import { toTimeFormat } from "../../utils/index.js";
 import { globalStore } from "../../stores";
 
-export const Post = ({ author, time, content, likeUsers }) => {
-  const { posts, currentUser } = globalStore.getState();
-
-  if (!currentUser) {
-    return;
-  }
-  const isLiked = likeUsers.includes(currentUser.username);
+export const Post = ({ author, time, content, likeUsers, activationLike }) => {
+  const { posts, currentUser, loggedIn } = globalStore.getState();
 
   const likeClick = () => {
-    if (!currentUser) {
+    if (!loggedIn) {
       alert("로그인 후 이용해주세요");
       return;
     }
 
     const updatedPosts = posts.map((post) => {
       if (post.author === author) {
+        const isLiked = post.likeUsers.includes(currentUser.username);
         const updateLikedUsers = isLiked
           ? post.likeUsers.filter(
               (username) => username !== currentUser.username,
@@ -49,7 +45,7 @@ export const Post = ({ author, time, content, likeUsers }) => {
       <p>{content}</p>
       <div className="mt-2 flex justify-between text-gray-500">
         <span
-          className={`like-button cursor-pointer${isLiked ? " text-blue-500" : ""}`}
+          className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
           onClick={likeClick}
         >
           좋아요 {likeUsers.length}

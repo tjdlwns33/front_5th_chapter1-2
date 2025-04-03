@@ -16,11 +16,11 @@ export function renderElement(vNode, container) {
   if (isFirstRender) {
     const element = createElement(normalizeNode);
     container.appendChild(element);
-    setupEventListeners(container);
   } else {
     const oldVNode = elementMap.get("vNode");
     updateElement(container, normalizeNode, oldVNode);
   }
 
   elementMap.set("vNode", normalizeNode);
+  setupEventListeners(container);
 }
